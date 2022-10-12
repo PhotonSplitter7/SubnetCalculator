@@ -146,6 +146,17 @@ void IPtoBroadcast(int cidrNum, int IP[4][8], int Broadcast[4][8]){
     return;
 }
 
+//gets ip for start address
+void getStartAddr(int gateway[4]){
+    gateway[3] += 1;//next address to
+    return;
+}
+
+//gets ip for last address
+void getEndAddr(int broadcast[4]){
+    broadcast[3] -= 1;
+    return;
+}
 
 //main function*********************************
 
@@ -209,11 +220,11 @@ convertToBinary(subMask, BinMask);
 
 //calculate cidr num
   cidrNum = getCIDRnum(BinMask);
-  printf (" CIDR prefix: %d\n", cidrNum);
+  printf (" CIDR prefix: /%d\n", cidrNum);
 
 //calculate size of network
-  sizeOfNetwork = (pow (2, (32 - cidrNum)) - 2);
-  printf ("\nsize of network is %d\n", sizeOfNetwork);
+  sizeOfNetwork = pow (2, (32 - cidrNum));
+  printf ("size of network is %d\n", sizeOfNetwork);
 
 //binary addresses for gateway and broadcast
   int gateWayBin[4][8];
@@ -226,39 +237,24 @@ IPtoBroadcast(cidrNum, BinAddr, broadcastBin);
 BinToDec(broadcast, broadcastBin);
  BinToDec(gateway, gateWayBin);
 
-
-
-//print gateway address binary
-  printf ("\ngateway Binary:");
-  printAddressBin(gateWayBin);
-
-  printf ("\nbroadcast Binary:");
-  printAddressBin(broadcastBin);
-
   printf ("\n");
 
-  printf("gateway:");
+  printf("Network address:");
   printAddressDec(gateway);
-  printf("broadcast:");
+  printf("\n");
+  printf("Broadcast address:");
   printAddressDec(broadcast);
 
-  printf ("\n\n");
-
-
-
-
-
-
-
-//print binary string for address
-  printf ("address:");
-  printAddressBin(BinAddr);
-
   printf ("\n");
 
-  //print binary string for mask
-  printf ("mask:");
-  printAddressBin(BinMask);
+//change gateway to start addr and broadcast to end addr
+getStartAddr(gateway);
+getEndAddr(broadcast);
+printf("First usible IP address:");
+printAddressDec(gateway);
+printf("\nLast usible IP address:");
+printAddressDec(broadcast);
+
 
   return 0;
 }
