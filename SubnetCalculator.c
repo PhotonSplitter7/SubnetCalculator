@@ -243,14 +243,14 @@ printf("\n");
 printf("Broadcast address:");
 printAddressDec(broadcast);
 printf ("\n");
-printf ("size of network is %d\n", sizeOfNetwork);
+printf ("size of network is %d", sizeOfNetwork);
 printf("\n");
 printf("First usible IP address:");
 printAddressDec(firstAddr);
 printf("\nLast usible IP address:");
 printAddressDec(lastAddr);
 printf("\n");
-printf (" CIDR prefix: /%d\n", cidrNum);
+printf ("CIDR prefix: /%d\n", cidrNum);
 
   return 0;
 }
