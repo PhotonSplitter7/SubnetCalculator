@@ -3,6 +3,19 @@
 #include <string.h>
 #include <math.h>
 
+//Helper functions*************************
+
+int pwr(int power){
+   int num=2;
+   for(int i=1;i<power;i++){
+       num = num*2;
+          }
+          return num;
+
+}
+
+
+//main function*********************************
 
 int main(){
 //4 octets to hold binary IP address thats converted
@@ -49,7 +62,7 @@ for(int i = 0; i<4; i++){
 
 //compute binary IP address and binary subnet mask
 for(int i = 0; i<4; i++){
-for(int j = 0; j < 8; j++){
+for(int j = 7; j >= 0; j--){
 BinAddr[i][j]= ipAddress[i]%2;
 ipAddress[i] = ipAddress[i]/2;
 BinMask[i][j]= subMask[i]%2;
@@ -85,6 +98,7 @@ printf("\nsize of network is %d\n", sizeOfNetwork);
 //calculate network address (gateway)
 int gateWayBin[4][8];
 
+//calculate binary gateway address
 for(int r = 0; r<4; r++){
     for(int c = 0; c<8; c++){
         if(((r*8)+c) >= cidrNum){//if dividing line reached only copy 0's into host bits
@@ -97,6 +111,25 @@ for(int r = 0; r<4; r++){
     }
 }
 
+//convert decimal gateway address from binary
+int sum = 0; //adds up power of 2 to get decimal representation of binary octet
+int power = 7;//power counts down for every column moved over
+
+for(int r=0;r<4;r++){
+for(int c=0;c<8;c++){
+if(gateWayBin[r][c] == 1){sum += pwr(power);}//add 2^power to sum
+power--;//power goes down 1 until end where its 2^0 for 1
+}
+
+//once octet calculated above assign it to decimal gateway address
+gateway[r] = sum;
+sum = 0;//reset sum for next octet
+power = 7;//reset power for next octet
+
+}
+
+
+
 //print gateway address binary
 printf("\ngateway Binary:");
 for(int r = 0; r<4; r++){
@@ -107,7 +140,12 @@ for(int r = 0; r<4; r++){
 
 printf("\n");
 
+for(int i = 0; i<4; i++){
+    printf("%d",gateway[i]);
+    printf(".");
+}
 
+printf("\n\n");
 
 
 
@@ -116,19 +154,23 @@ printf("\n");
 
 
 //print binary string for address
+printf("address:");
 for(int j = 0; j< 4;j++){
 for(int i = 0; i< 8; i++){
     printf("%d", BinAddr[j][i]);
 }
+printf(".");
 }
 
 printf("\n");
 
     //print binary string for mask
+    printf("mask:");
 for(int j = 0; j< 4;j++){
 for(int i = 0; i< 8; i++){
     printf("%d", BinMask[j][i]);
 }
+printf(".");
 }
 
 return 0;
