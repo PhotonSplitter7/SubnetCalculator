@@ -147,14 +147,22 @@ void IPtoBroadcast(int cidrNum, int IP[4][8], int Broadcast[4][8]){
 }
 
 //gets ip for start address
-void getStartAddr(int gateway[4]){
-    gateway[3] += 1;//next address to
+void getStartAddr(int gateway[4], int firstAddr[4]){
+    for(int i=0;i<4;i++){
+        firstAddr[i] = gateway[i];
+    }
+    firstAddr[3] += 1;//next address to
     return;
 }
 
 //gets ip for last address
-void getEndAddr(int broadcast[4]){
-    broadcast[3] -= 1;
+void getEndAddr(int broadcast[4], int lastAddr[4]){
+    //copy broadcast address to last address
+    for(int i=0;i<4;i++){
+        lastAddr[i] = broadcast[i];
+    }
+    //subtract 1 from broadcast address
+    lastAddr[3] -= 1;
     return;
 }
 
@@ -174,14 +182,12 @@ main ()
   int gateway[4];		//all host bits are 0
   int broadcast[4];		//all host bits are 1
   int cidrNum = 0;
-  int hostBits = 0;
   int sizeOfNetwork = 0;
 
   int BinAddr[4][8];
   int BinMask[4][8];
 
-  int IP[4];			//perminent variables to store IP and Mask
-  int SUBNETMASK[4];
+
 
 
 
@@ -197,64 +203,54 @@ main ()
   sscanf (maskString, "%d.%d.%d.%d", &subMask[0], &subMask[1], &subMask[2],
 	  &subMask[3]);
 
-//copy IP and Mask for perminent storage
-  for (int i = 0; i < 4; i++)
-    {
-      IP[i] = ipAddress[i];
-      SUBNETMASK[i] = subMask[i];
-    }
 
 
-
-
-
-//compute binary IP address and binary subnet mask
-convertToBinary(ipAddress, BinAddr);
-convertToBinary(subMask, BinMask);
 
 
 
 //************************compute network addresses*****************
 
-
+//compute binary IP address and binary subnet mask
+convertToBinary(ipAddress, BinAddr);
+convertToBinary(subMask, BinMask);
 
 //calculate cidr num
-  cidrNum = getCIDRnum(BinMask);
-  printf (" CIDR prefix: /%d\n", cidrNum);
+cidrNum = getCIDRnum(BinMask);
 
 //calculate size of network
-  sizeOfNetwork = pow (2, (32 - cidrNum));
-  printf ("size of network is %d\n", sizeOfNetwork);
+sizeOfNetwork = pow (2, (32 - cidrNum));
 
 //binary addresses for gateway and broadcast
-  int gateWayBin[4][8];
-  int broadcastBin[4][8];
+int gateWayBin[4][8];
+int broadcastBin[4][8];
 
 //calculate binary gateway address from binary IP
 IPtoGateway(cidrNum, BinAddr, gateWayBin);
 IPtoBroadcast(cidrNum, BinAddr, broadcastBin);
+
 //convert decimal gateway address from binary
 BinToDec(broadcast, broadcastBin);
  BinToDec(gateway, gateWayBin);
 
-  printf ("\n");
+//calculate start and end IP address
+getStartAddr(gateway, firstAddr);
+getEndAddr(broadcast, lastAddr);
 
-  printf("Network address:");
-  printAddressDec(gateway);
-  printf("\n");
-  printf("Broadcast address:");
-  printAddressDec(broadcast);
-
-  printf ("\n");
-
-//change gateway to start addr and broadcast to end addr
-getStartAddr(gateway);
-getEndAddr(broadcast);
-printf("First usible IP address:");
+printf ("\n");
+printf("Network address:");
 printAddressDec(gateway);
-printf("\nLast usible IP address:");
+printf("\n");
+printf("Broadcast address:");
 printAddressDec(broadcast);
-
+printf ("\n");
+printf ("size of network is %d\n", sizeOfNetwork);
+printf("\n");
+printf("First usible IP address:");
+printAddressDec(firstAddr);
+printf("\nLast usible IP address:");
+printAddressDec(lastAddr);
+printf("\n");
+printf (" CIDR prefix: /%d\n", cidrNum);
 
   return 0;
 }
