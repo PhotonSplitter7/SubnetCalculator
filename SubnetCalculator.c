@@ -241,7 +241,7 @@ main ()
       cidrNum = getCIDRnum (BinMask);
 
 //calculate size of network
-      sizeOfNetwork = pow (2, (32 - cidrNum));
+      sizeOfNetwork = pwr ( (32 - cidrNum));
 
 //binary addresses for gateway and broadcast
       int gateWayBin[4][8];
